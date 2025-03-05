@@ -1,89 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Menu</title>
-    <!-- font-awesome -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
-    />
-    <!-- styles -->
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <section class="menu" >
-      <!-- title -->
-      <div class="title">
-        <h2>our menu</h2>
-        <div class="underline"></div>
-      </div>
-      <!-- filter buttons -->
-      <div class="btn-container" id="btn">
-         <button type="button" class="filter-btn" data-id="all">all</button>
-        <button type="button" class="filter-btn" data-id="breakfast">
-          breakfast
-        </button>
-        <button type="button" class="filter-btn" data-id="lunch">lunch</button>
-        <button type="button" class="filter-btn" data-id="shakes">
-          shakes
-        </button> 
-      </div>
-      <!-- menu items -->
-      <div class="section-center" id="menu">
-        <!-- single item -->
-        <article class="menu-item">
-          <img src="./menu-item.jpeg" alt="menu item" class="photo" />
-          <div class="item-info">
-            <header>
-              <h4>buttermilk pancakes</h4>
-              <h4 class="price">$15</h4>
-            </header>
-            <p class="item-text">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Repudiandae, sint quam. Et reprehenderit fugiat nesciunt inventore
-              laboriosam excepturi! Quo, officia.
-            </p>
-          </div>
-        </article>
 
-        <article class="menu-item">
-          <img src="./menu-item.jpeg" alt="menu item" class="photo" />
-          <div class="item-info">
-            <header>
-              <h4>buttermilk pancakes</h4>
-              <h4 class="price">$15</h4>
-            </header>
-            <p class="item-text">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Repudiandae, sint quam. Et reprehenderit fugiat nesciunt inventore
-              laboriosam excepturi! Quo, officia.
-            </p>
-          </div>
-        </article>
-        
-       
-      </div>
-    </section>
-    <!-- javascript -->
-     <script src="app.js"></script> 
-     <script>
-      const newArray=menu.map(function myFunction(val){
-          return `<article class="menu-item">
-          <img src=${val.img} alt="menu item" class="photo" />
-          <div class="item-info">
-            <header>
-              <h4> ${val.title}</h4>
-              <h4 class="price">$${val.price}</h4>
-            </header>
-            <p class="item-text">
-              ${val.desc}
-            </p>
-          </div>
-        </article>`;
-      })
-      document.getElementById("menu").innerHTML=newArray.join("");
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menu</title>
+  <!-- font-awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" />
+  <!-- styles -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <section class="menu">
+    <!-- title -->
+    <div class="title">
+      <h2>our menu</h2>
+      <div class="underline"></div>
+    </div>
+    <!-- filter buttons -->
+    <button type="button" class="filter-btn" data-id="all" onClick="priceFilter('asc');">Low To High</button>
+    <button type="button" class="filter-btn" data-id="breakfast" onClick="priceFilter('dsc');">High To Low</button>
+    <div class="btn-container" id="btn">
+      <button type="button" class="filter-btn" data-id="all">all</button>
+      <button type="button" class="filter-btn" data-id="breakfast">
+        breakfast
+      </button>
+      <button type="button" class="filter-btn" data-id="lunch">lunch</button>
+      <button type="button" class="filter-btn" data-id="shakes">
+        shakes
+      </button>
+    </div>
+    <!-- menu items -->
+    <div class="section-center" id="menu">
+      <!-- single item -->
+      <article class="menu-item">
+        <img src="./menu-item.jpeg" alt="menu item" class="photo" />
+        <div class="item-info">
+          <header>
+            <h4>buttermilk pancakes</h4>
+            <h4 class="price">$15</h4>
+          </header>
+          <p class="item-text">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            Repudiandae, sint quam. Et reprehenderit fugiat nesciunt inventore
+            laboriosam excepturi! Quo, officia.
+          </p>
+        </div>
+      </article>
+
+      <article class="menu-item">
+        <img src="./menu-item.jpeg" alt="menu item" class="photo" />
+        <div class="item-info">
+          <header>
+            <h4>buttermilk pancakes</h4>
+            <h4 class="price">$15</h4>
+          </header>
+          <p class="item-text">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            Repudiandae, sint quam. Et reprehenderit fugiat nesciunt inventore
+            laboriosam excepturi! Quo, officia.
+          </p>
+        </div>
+      </article>
+
+
+    </div>
+  </section>
+  <!-- javascript -->
+  <script src="app.js"></script>
+  <script>
+    menu.sort(function my(val1, val2) {
+      if (val1.title > val2.title) {
+        return 1;
+      }
+      else {
+        return -1;
+      }
+    });
+
+    const btn_Array = menu.map(function displayBtn(val) {
+      return ` <button type="button" class="filter-btn" data-id="all" 
+      onClick="filterCat('${val.category}')
+      ">
+      ${val.category}
+      </button> `;
+    });
+
+    document.getElementById("btn").innerHTML = btn_Array.join("");
+
+    function filterCat(cat) {
+      const temp = menu.filter(function filterFunction(val) {
+        return cat == val.category;
+      });
+      displayMenu(temp);
+    }
+
+    function displayMenu(t) {
+      const newArray = t.map(function myFunction(val) {
+
+        return `<article class="menu-item">
+         <img src=${val.img} alt="menu item" class="photo" />
+         <div class="item-info">
+           <header>
+             <h4> ${val.title}</h4>
+             <h4 class="price">$${val.price}</h4>
+           </header>
+           <p class="item-text">
+             ${val.desc}
+           </p>
+         </div>
+       </article>`;
+      });
+      
+      document.getElementById("menu").innerHTML = newArray.join("");
+    }
+
+    function priceFilter(p) {
+      const t = menu.sort(function filterP(a, b) {
+        if (p == "dsc") {
+          return b.price - a.price;
+        }
+        else {
+          return a.price - b.price;
+        }
+      });
+      displayMenu(t);
+    }
+    
+    displayMenu(menu);
+
   </script>
-  </body>
+</body>
+
 </html>
