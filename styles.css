@@ -262,3 +262,16 @@ Menu
     height: 150px;
   }
 }
+
+.addcartbtn{
+  padding: 7px 20px;
+  text-transform: uppercase;
+  font-weight: 600;
+  background-color: rgb(113, 169, 1);
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+.addcartbtn:hover{
+  background-color: black;
+}

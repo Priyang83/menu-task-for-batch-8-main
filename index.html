@@ -12,11 +12,15 @@
 </head>
 
 <body>
+    <strong>Checkout Ammount: </strong>
+      <strong id="Checkout"></strong>
   <section class="menu">
     <!-- title -->
     <div class="title">
       <h2>our menu</h2>
+      
       <div class="underline"></div>
+      
     </div>
     <!-- filter buttons -->
     <button type="button" class="filter-btn" data-id="all" onClick="priceFilter('asc');">Low To High</button>
@@ -47,6 +51,8 @@
             laboriosam excepturi! Quo, officia.
           </p>
         </div>
+        <button class="addcartbtn">add to cart</button>
+
       </article>
 
       <article class="menu-item">
@@ -62,14 +68,27 @@
             laboriosam excepturi! Quo, officia.
           </p>
         </div>
+
       </article>
 
 
     </div>
   </section>
+  <h2 align="center">
+    cart:
+  </h2>
+  <div id="cart">
+
+  </div>
+
+  
   <!-- javascript -->
   <script src="app.js"></script>
   <script>
+    const cart_Array=[];
+    let checkoutVal= 0;
+    document.getElementById("Checkout").innerHTML="$ "+checkoutVal;
+    
     menu.sort(function my(val1, val2) {
       if (val1.title > val2.title) {
         return 1;
@@ -79,11 +98,22 @@
       }
     });
 
-    const btn_Array = menu.map(function displayBtn(val) {
+
+    const categories = menu.reduce(function (pre, val) {
+      if (pre.includes(val.category) == false) {
+        pre.push(val.category);
+      }
+
+      return pre;
+
+    }, []);
+
+    categories.unshift("All");
+    const btn_Array = categories.map(function displayBtn(val) {
       return ` <button type="button" class="filter-btn" data-id="all" 
-      onClick="filterCat('${val.category}')
+      onClick="filterCat('${val}')
       ">
-      ${val.category}
+      ${val}
       </button> `;
     });
 
@@ -91,7 +121,7 @@
 
     function filterCat(cat) {
       const temp = menu.filter(function filterFunction(val) {
-        return cat == val.category;
+        return cat == val.category || cat == "All";
       });
       displayMenu(temp);
     }
@@ -109,10 +139,12 @@
            <p class="item-text">
              ${val.desc}
            </p>
+           <button class="addcartbtn" onClick="cartFunction('${val.id}')">add to cart</button>
          </div>
+         
        </article>`;
       });
-      
+
       document.getElementById("menu").innerHTML = newArray.join("");
     }
 
@@ -127,7 +159,46 @@
       });
       displayMenu(t);
     }
-    
+
+    function cartFunction(i) {
+      const ar = menu.filter(function (val) {
+        return i == val.id;
+      });
+
+      cart_Array.push(ar.reduce(function(pre,val){
+        return pre;
+      }));
+
+      
+
+      checkoutVal = cart_Array.reduce(function(pre,val){
+        return pre + val.price;
+      },0);
+
+      document.getElementById("Checkout").innerHTML="$ "+checkoutVal;
+
+      const newArray = cart_Array.map(function myFunction(val) {
+
+        return `<article class="menu-item">
+          <img src=${val.img} alt="menu item" class="photo" />
+          <div class="item-info">
+            <header>
+              <h4> ${val.title}</h4>
+              <h4 class="price">$${val.price}</h4>
+            </header>
+            <p class="item-text">
+              ${val.desc}
+            </p>
+            
+          </div>
+
+          </article>`;
+      });
+      document.getElementById("cart").innerHTML = newArray.join("");
+
+      
+    }
+
     displayMenu(menu);
 
   </script>
