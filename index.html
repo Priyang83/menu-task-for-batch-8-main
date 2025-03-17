@@ -12,15 +12,17 @@
 </head>
 
 <body>
-    <strong>Checkout Ammount: </strong>
-      <strong id="Checkout"></strong>
+  <strong>Cart Count: </strong>
+  <strong id="cart_count"></strong><br>
+  <button onclick="checkout()">checkout</button>
+  <strong id="checkout_val"></strong>
   <section class="menu">
     <!-- title -->
     <div class="title">
       <h2>our menu</h2>
-      
+
       <div class="underline"></div>
-      
+
     </div>
     <!-- filter buttons -->
     <button type="button" class="filter-btn" data-id="all" onClick="priceFilter('asc');">Low To High</button>
@@ -74,21 +76,16 @@
 
     </div>
   </section>
-  <h2 align="center">
-    cart:
-  </h2>
-  <div id="cart">
 
-  </div>
 
-  
+
+
   <!-- javascript -->
   <script src="app.js"></script>
   <script>
-    const cart_Array=[];
-    let checkoutVal= 0;
-    document.getElementById("Checkout").innerHTML="$ "+checkoutVal;
-    
+    const cart_Array = [];
+
+
     menu.sort(function my(val1, val2) {
       if (val1.title > val2.title) {
         return 1;
@@ -161,44 +158,29 @@
     }
 
     function cartFunction(i) {
-      const ar = menu.filter(function (val) {
-        return i == val.id;
+      let items = cart_Array.find(function (val) {
+        return val.id == i;
       });
-
-      cart_Array.push(ar.reduce(function(pre,val){
-        return pre;
-      }));
-
-      
-
-      checkoutVal = cart_Array.reduce(function(pre,val){
-        return pre + val.price;
-      },0);
-
-      document.getElementById("Checkout").innerHTML="$ "+checkoutVal;
-
-      const newArray = cart_Array.map(function myFunction(val) {
-
-        return `<article class="menu-item">
-          <img src=${val.img} alt="menu item" class="photo" />
-          <div class="item-info">
-            <header>
-              <h4> ${val.title}</h4>
-              <h4 class="price">$${val.price}</h4>
-            </header>
-            <p class="item-text">
-              ${val.desc}
-            </p>
-            
-          </div>
-
-          </article>`;
-      });
-      document.getElementById("cart").innerHTML = newArray.join("");
-
-      
+      if (items) {
+        items.qty += 1;
+      }
+      else {
+        let newItems = menu.find(function (val) {
+          return val.id == i;
+        });
+        newItems.qty = 1;
+        cart_Array.push(newItems);
+      }
+      const cartCount = cart_Array.length;
+      document.getElementById("cart_count").innerHTML = cartCount;
     }
 
+    function checkout(){
+      const chkout=cart_Array.reduce(function(pre,val){
+        return pre + val.price * val.qty;
+      },0);
+      document.getElementById("checkout_val").innerHTML=chkout;
+    }
     displayMenu(menu);
 
   </script>
