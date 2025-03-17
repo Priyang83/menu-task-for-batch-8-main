@@ -1,84 +1,101 @@
-const menu = [
-  {
-    id: 1,
-    title: "buttermilk pancakes",
-    category: "breakfast",
-    price: 15.99,
-    img: "./images/item-1.jpeg",
-    desc: `I'm baby woke mlkshk wolf bitters live-edge blue bottle, hammock freegan copper mug whatever cold-pressed `,
-  },
-  {
-    id: 2,
-    title: "diner double",
-    category: "lunch",
-    price: 13.99,
-    img: "./images/item-2.jpeg",
-    desc: `vaporware iPhone mumblecore selvage raw denim slow-carb leggings gochujang helvetica man braid jianbing. Marfa thundercats `,
-  },
-  {
-    id: 3,
-    title: "godzilla milkshake",
-    category: "shakes",
-    price: 6.99,
-    img: "./images/item-3.jpeg",
-    desc: `ombucha chillwave fanny pack 3 wolf moon street art photo booth before they sold out organic viral.`,
-  },
-  {
-    id: 4,
-    title: "country delight",
-    category: "breakfast",
-    price: 20.99,
-    img: "./images/item-4.jpeg",
-    desc: `Shabby chic keffiyeh neutra snackwave pork belly shoreditch. Prism austin mlkshk truffaut, `,
-  },
-  {
-    id: 5,
-    title: "egg attack",
-    category: "lunch",
-    price: 22.99,
-    img: "./images/item-5.jpeg",
-    desc: `franzen vegan pabst bicycle rights kickstarter pinterest meditation farm-to-table 90's pop-up `,
-  },
-  {
-    id: 6,
-    title: "oreo dream",
-    category: "shakes",
-    price: 18.99,
-    img: "./images/item-6.jpeg",
-    desc: `Portland chicharrones ethical edison bulb, palo santo craft beer chia heirloom iPhone everyday`,
-  },
-  {
-    id: 7,
-    title: "bacon overflow",
-    category: "breakfast",
-    price: 8.99,
-    img: "./images/item-7.jpeg",
-    desc: `carry jianbing normcore freegan. Viral single-origin coffee live-edge, pork belly cloud bread iceland put a bird `,
-  },
-  {
-    id: 8,
-    title: "american classic",
-    category: "lunch",
-    price: 12.99,
-    img: "./images/item-8.jpeg",
-    desc: `on it tumblr kickstarter thundercats migas everyday carry squid palo santo leggings. Food truck truffaut  `,
-  },
-  {
-    id: 9,
-    title: "quarantine buddy",
-    category: "shakes",
-    price: 16.99,
-    img: "./images/item-9.jpeg",
-    desc: `skateboard fam synth authentic semiotics. Live-edge lyft af, edison bulb yuccie crucifix microdosing.`,
-  },
-  {
-    id: 10,
-    title: "bison steak",
-    category: "dinner",
-    price: 22.99,
-    img: "./images/item-10.jpeg",
-    desc: `skateboard fam synth authentic semiotics. Live-edge lyft af, edison bulb yuccie crucifix microdosing.`,
-  },
-];
 
+const cart_Array = [];
+
+
+menu.sort(function my(val1, val2) {
+    if (val1.title > val2.title) {
+        return 1;
+    }
+    else {
+        return -1;
+    }
+});
+
+
+const categories = menu.reduce(function (pre, val) {
+    if (pre.includes(val.category) == false) {
+        pre.push(val.category);
+    }
+
+    return pre;
+
+}, []);
+
+categories.unshift("All");
+const btn_Array = categories.map(function displayBtn(val) {
+    return ` <button type="button" class="filter-btn" data-id="all" 
+      onClick="filterCat('${val}')
+      ">
+      ${val}
+      </button> `;
+});
+
+document.getElementById("btn").innerHTML = btn_Array.join("");
+
+function filterCat(cat) {
+    const temp = menu.filter(function filterFunction(val) {
+        return cat == val.category || cat == "All";
+    });
+    displayMenu(temp);
+}
+
+function displayMenu(t) {
+    const newArray = t.map(function myFunction(val) {
+
+        return `<article class="menu-item">
+         <img src=${val.img} alt="menu item" class="photo" />
+         <div class="item-info">
+           <header>
+             <h4> ${val.title}</h4>
+             <h4 class="price">$${val.price}</h4>
+           </header>
+           <p class="item-text">
+             ${val.desc}
+           </p>
+           <button class="addcartbtn" onClick="cartFunction('${val.id}')">add to cart</button>
+         </div>
+         
+       </article>`;
+    });
+
+    document.getElementById("menu").innerHTML = newArray.join("");
+}
+
+function priceFilter(p) {
+    const t = menu.sort(function filterP(a, b) {
+        if (p == "dsc") {
+            return b.price - a.price;
+        }
+        else {
+            return a.price - b.price;
+        }
+    });
+    displayMenu(t);
+}
+
+function cartFunction(i) {
+    let items = cart_Array.find(function (val) {
+        return val.id == i;
+    });
+    if (items) {
+        items.qty += 1;
+    }
+    else {
+        let newItems = menu.find(function (val) {
+            return val.id == i;
+        });
+        newItems.qty = 1;
+        cart_Array.push(newItems);
+    }
+    const cartCount = cart_Array.length;
+    document.getElementById("cart_count").innerHTML = cartCount;
+}
+
+function checkout() {
+    const chkout = cart_Array.reduce(function (pre, val) {
+        return pre + val.price * val.qty;
+    }, 0);
+    document.getElementById("checkout_val").innerHTML = chkout;
+}
+displayMenu(menu);
 
